@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rasm Auksioni</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--tx:#1b1f2a;--mu:#6b7385;--ac:#2a8cf0;--ok:#1fa463;--wr:#e5484d;--bd:#e2e6ef;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10131a;--card:#1a1f2b;--tx:#eef1f7;--mu:#97a0b5;--bd:#2a3142;color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:520px;margin:0 auto;padding:14px}
+h1{font-size:20px;margin:0}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.coin{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:6px 12px;font-weight:600}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px;margin-bottom:12px}
+.img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;background:var(--bd);display:block}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.big{font-size:28px;font-weight:800}
+.mu{color:var(--mu);font-size:14px}
+.tm{font-size:22px;font-weight:800;color:var(--ac)}
+.tm.lo{color:var(--wr)}
+.bar{height:6px;background:var(--bd);border-radius:4px;overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;background:var(--ac);width:100%;transition:width .25s linear}
+button{font:inherit;border:0;border-radius:12px;padding:12px;font-weight:700;background:var(--ac);color:#fff;flex:1;cursor:pointer}
+button.g{background:var(--bd);color:var(--tx)}
+button:disabled{opacity:.45}
+.pl{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd)}
+.pl:last-child{border:0}
+.lead{color:var(--ok);font-weight:700}
+.log{font-size:14px;color:var(--mu);max-height:90px;overflow:auto}
+.th{display:flex;gap:6px;overflow-x:auto;margin-top:8px}
+.th img{width:56px;height:56px;object-fit:cover;border-radius:8px}
+input[type=file]{width:100%}
+.hid{display:none}
+.host{display:flex;gap:10px;align-items:center}.host div{min-width:0}#hs{font-size:15px}
+#face{flex:none}.eye,#mouth{transform-box:fill-box;transform-origin:center}.eye{animation:bl 4s infinite}@keyframes bl{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+.talk #mouth{animation:mo .28s infinite alternate}@keyframes mo{from{transform:scaleY(1)}to{transform:scaleY(4)}}.talk{animation:bob .5s infinite alternate}@keyframes bob{to{transform:translateY(-2px)}}
+#snd{flex:none;width:auto;padding:8px 10px}
+.pk{position:relative;margin:8px 0}.pk input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}.btn{display:block;text-align:center;background:var(--ac);color:#fff;border-radius:12px;padding:14px;font-weight:700;cursor:pointer;margin:8px 0}
+
+.wins{display:flex;gap:6px;overflow-x:auto;margin:4px 0 10px}.wins img{width:64px;height:64px;object-fit:cover;border-radius:8px}
+input[type=text]{width:100%;font:inherit;padding:12px;border-radius:12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);margin:8px 0}
+.lnk{word-break:break-all;font-size:13px;background:var(--bg);border-radius:8px;padding:8px;margin:8px 0}
+.gap{height:8px}
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="top"><h1>🔨 Rasm Auksioni</h1><div class="coin" id="me">🪙 1000</div></div>
+  <div class="card host"><svg id="face" viewBox="0 0 100 100" width="88" height="88" aria-label="AI boshlovchi"><defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe3c4"/><stop offset="1" stop-color="#f2b988"/></linearGradient><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6dd5fa"/><stop offset="1" stop-color="#8e7cf0"/></linearGradient></defs><circle cx="50" cy="50" r="49" fill="url(#bg)"/><path d="M16 96 Q18 76 50 76 Q82 76 84 96 A49 49 0 0 1 16 96Z" fill="#2b2f4a"/><path d="M40 77 L50 94 L60 77Z" fill="#fff"/><path d="M43 82 L50 85 L43 89Z M57 82 L50 85 L57 89Z" fill="#e5484d"/><rect x="44" y="66" width="12" height="12" rx="4" fill="#f2b988"/><circle cx="24" cy="46" r="5" fill="#f2b988"/><circle cx="76" cy="46" r="5" fill="#f2b988"/><ellipse cx="50" cy="45" rx="26" ry="28" fill="url(#sk)"/><path d="M23 42 Q18 12 50 12 Q82 12 77 42 Q72 26 56 24 Q42 30 30 28 Q25 32 23 42Z" fill="#3b2417"/><path d="M32 38 Q38 34 45 37 M55 37 Q62 34 68 38" stroke="#3b2417" stroke-width="2.6" stroke-linecap="round" fill="none"/><g class="eye"><ellipse cx="39" cy="46" rx="5.5" ry="6.2" fill="#fff"/><circle cx="39.5" cy="47" r="3.3" fill="#2a1a12"/><circle cx="40.6" cy="45.6" r="1.1" fill="#fff"/></g><g class="eye"><ellipse cx="61" cy="46" rx="5.5" ry="6.2" fill="#fff"/><circle cx="61.5" cy="47" r="3.3" fill="#2a1a12"/><circle cx="62.6" cy="45.6" r="1.1" fill="#fff"/></g><path d="M50 50 Q47 57 51 58" stroke="#d9966a" stroke-width="1.8" stroke-linecap="round" fill="none"/><circle cx="32" cy="57" r="4.5" fill="#ff8f8f" opacity=".45"/><circle cx="68" cy="57" r="4.5" fill="#ff8f8f" opacity=".45"/><g id="mouth"><ellipse cx="50" cy="65" rx="7.5" ry="2.6" fill="#7a1f2b"/><ellipse cx="50" cy="66.2" rx="4" ry="1.2" fill="#e8707f"/></g><path d="M22 46 Q20 8 50 8 Q80 8 78 46" stroke="#444a63" stroke-width="3.2" fill="none"/><rect x="18" y="42" width="7" height="13" rx="3" fill="#444a63"/><rect x="75" y="42" width="7" height="13" rx="3" fill="#444a63"/><path d="M21 55 Q22 70 40 70" stroke="#444a63" stroke-width="2.2" fill="none"/><circle cx="42" cy="70" r="3" fill="#e5484d"/></svg><div><b>AI boshlovchi</b><div id="hs">Salom, do‘stlar!</div></div><button id="snd" class="g" aria-label="Ovoz">🔊</button></div>
+
+  <div id="join" class="card">
+    <b>Ismingiz</b><input type="text" id="nm" maxlength="20" placeholder="Ismingizni yozing">
+    <button id="hostBtn" style="width:100%">🎪 Yangi xona ochish (men egaman)</button>
+    <div class="gap"></div><button id="joinBtn" class="hid" style="width:100%">🚪 Xonaga kirish</button>
+    <p class="mu" id="jm"></p>
+  </div>
+
+  <div id="lobby" class="hid">
+    <div class="card hid" id="invbox"><b>Do‘stlarni chaqiring</b><div class="lnk" id="lnk"></div>
+      <div class="row"><button id="shr">✈️ Telegramga yuborish</button><button id="cp" class="g">📋 Nusxa</button></div>
+      <p class="mu">Siz sahifani yopmang: o‘yin sizning telefoningizda ishlaydi.</p></div>
+    <div class="card"><b>O‘yinchilar</b><div id="lp"></div><p class="mu" id="lh"></p></div>
+    <div class="card hid" id="hostbox">
+      <b>Rasmlarni joylang</b>
+      <div class="pk"><div class="btn">📷 Rasm tanlash</div><input type="file" id="f" accept="image/*" multiple></div>
+      <div class="mu" id="fs"></div>
+      <div class="row"><button id="clr" class="g">🗑 Tozalash</button><button id="go">▶ Boshlash</button></div>
+    </div>
+  </div>
+
+  <div id="game" class="hid">
+    <div class="card">
+      <div class="mu" id="cnt"></div>
+      <img class="img" id="pic" alt="Lot rasmi">
+      <div class="row" style="margin-top:10px">
+        <div><div class="mu">Hozirgi narx</div><div class="big" id="bid">🪙 0</div><div class="lead" id="ld"></div></div>
+        <div class="tm" id="tm">15</div>
+      </div>
+      <div class="bar"><i id="br"></i></div>
+      <div class="row"><button id="b1">+10</button><button id="b2">+50</button><button id="b3">+100</button></div>
+    </div>
+    <div class="card"><b>O‘yinchilar</b><div id="pls"></div></div>
+    <div class="card"><b>Voqealar</b><div class="log" id="log"></div></div>
+  </div>
+
+  <div id="end" class="hid">
+    <div class="card"><b id="win">Natija</b><div id="res"></div></div>
+    <button id="again" class="hid" style="width:100%">🔁 Qayta o‘ynash</button>
+  </div>
+</div>
+<script>
+const $=i=>document.getElementById(i);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const START=1000,LOT=15000,EXT=8000,MAXLOTS=12;
+let role=null,peer=null,conn=null,code=null,myId=null,myName="",S={state:"lobby",players:[]},at=0,snd=true,tt,R=null;
+try{myId=localStorage.getItem("pid")}catch(e){}
+if(!myId){myId="p"+Math.random().toString(36).slice(2,9);try{localStorage.setItem("pid",myId)}catch(e){}}
+const urlCode=new URLSearchParams(location.search).get("r");
+
+/* ===== boshlovchi: yuz + ovoz ===== */
+function show(t){
+  $("hs").textContent=t;const f=$("face");f.classList.add("talk");clearTimeout(tt);
+  tt=setTimeout(()=>f.classList.remove("talk"),Math.max(1500,t.length*70));
+  try{
+    if(!snd||!window.speechSynthesis)return;
+    speechSynthesis.cancel();
+    setTimeout(()=>{try{
+      const u=new SpeechSynthesisUtterance(t.replace(/[\u{1F000}-\u{1FFFF}\u2600-\u27BF\uFE0F]/gu,""));
+      const v=speechSynthesis.getVoices();
+      const m=v.find(x=>/^uz/i.test(x.lang))||v.find(x=>/^tr/i.test(x.lang))||v.find(x=>/^ru/i.test(x.lang));
+      u.lang=m?m.lang:"tr-TR";if(m)u.voice=m;
+      u.onend=()=>{clearTimeout(tt);f.classList.remove("talk")};
+      speechSynthesis.speak(u)}catch(e){}},150);
+  }catch(e){}
+}
+function unlock(){try{const u=new SpeechSynthesisUtterance(" ");u.volume=0;speechSynthesis.speak(u)}catch(e){}}
+document.addEventListener("click",unlock,{once:true});
+$("snd").onclick=()=>{if(!window.speechSynthesis){show("Bu qurilmada ovoz yo‘q 😔");return}snd=!snd;$("snd").textContent=snd?"🔊":"🔇";if(snd){unlock();show("Ovoz yoqildi!")}else speechSynthesis.cancel()};
+const LINES={
+  lot:["🔔 Yangi rasm! Kim talashadi?","🔔 Keyingi rasm maydonda, tanga tayyormi?","🔔 Mana yangi lot! Boshladik!"],
+  bid:["👀 {n} 🪙 {b} berdi!","🔥 {n} narxni 🪙 {b} qildi, kim yuqori?","💰 {n} 🪙 {b}! Kim to‘xtatadi?"],
+  sold:["🔨 Sotildi! {n} 🪙 {b} ga oldi!","🎉 {n} yutdi, narxi 🪙 {b}!","🔨 Bir, ikki, uch! {n} ga 🪙 {b}!"],
+  none:["😅 Hech kim olmadi!","🤷 Bu rasmga qiziqmadilar!"],
+  end:["🏆 Tabriklaymiz, {n}!","👑 Bugungi auksion qiroli: {n}!"]
+};
+const L=(k,n,b)=>pick(LINES[k]).replace("{n}",n||"").replace("{b}",b||"");
+
+/* ===== HOST: o‘yin mantig‘i (ega telefonida ishlaydi) ===== */
+function hostInit(){R={players:new Map(),lots:[],state:"lobby",idx:-1,bid:0,leader:null,end:0,t:null,log:[],ls:0}}
+function hsend(p,o){if(p.id===myId)on(o);else if(p.conn&&p.conn.open)p.conn.send(o)}
+function all(o){R.players.forEach(p=>hsend(p,o))}
+function pub(){return{t:"state",state:R.state,host:myId,n:R.lots.length,idx:R.idx,bid:R.bid,leader:R.leader,left:Math.max(0,R.end-Date.now()),log:R.log.slice(0,6),
+  players:[...R.players.values()].map(p=>({id:p.id,name:p.name,coins:p.coins,wins:p.won.length,on:p.id===myId||!!(p.conn&&p.conn.open)}))}}
+const push=()=>all(pub());
+const addLog=t=>{R.log.unshift(t);R.log=R.log.slice(0,20)};
+function sayH(txt,force){if(!force&&Date.now()-R.ls<6000)return;R.ls=Date.now();all({t:"say",text:txt})}
+function startLot(){
+  R.idx++;if(R.idx>=R.lots.length)return finish();
+  R.bid=0;R.leader=null;R.end=Date.now()+LOT;
+  addLog("🔔 Lot "+(R.idx+1)+"/"+R.lots.length+" boshlandi");
+  all({t:"lot",img:R.lots[R.idx]});push();sayH(L("lot"),true);arm();
+}
+function arm(){clearTimeout(R.t);R.t=setTimeout(sold,Math.max(0,R.end-Date.now()))}
+function sold(){
+  const p=R.players.get(R.leader);
+  if(p){p.coins-=R.bid;p.won.push(R.lots[R.idx]);addLog("✅ "+p.name+" 🪙 "+R.bid+" ga oldi!");sayH(L("sold",p.name,R.bid),true)}
+  else{addLog("❌ Hech kim olmadi");sayH(L("none"),true)}
+  R.end=0;R.state="sold";push();
+  R.t=setTimeout(()=>{R.state="auction";startLot()},2500);
+}
+function finish(){
+  R.state="end";clearTimeout(R.t);
+  const res=[...R.players.values()].sort((a,b)=>b.won.length-a.won.length||b.coins-a.coins).map(p=>({id:p.id,name:p.name,coins:p.coins,won:p.won}));
+  all({t:"end",results:res});push();if(res[0])sayH(L("end",res[0].name),true);
+}
+function hostRecv(id,m,c){
+  if(m.t==="join"){
+    let p=R.players.get(id);
+    if(!p){p={id,name:String(m.name||"Mehmon").slice(0,24),coins:START,won:[],conn:null};R.players.set(id,p)}
+    if(c)p.conn=c;
+    if(R.state==="auction"&&R.lots[R.idx])hsend(p,{t:"lot",img:R.lots[R.idx]});
+    return push();
+  }
+  const p=R.players.get(id);if(!p)return;
+  const own=id===myId;
+  if(m.t==="addLots"&&own&&R.state==="lobby"&&Array.isArray(m.images)){
+    for(const im of m.images){if(R.lots.length>=MAXLOTS)break;if(typeof im==="string"&&im.startsWith("data:image/"))R.lots.push(im)}push();
+  }else if(m.t==="clearLots"&&own&&R.state==="lobby"){R.lots=[];push()}
+  else if(m.t==="start"&&own&&R.state==="lobby"&&R.lots.length){R.state="auction";R.idx=-1;startLot()}
+  else if(m.t==="bid"&&R.state==="auction"){
+    const add=Number(m.add);
+    if(![10,50,100].includes(add)||R.leader===id||Date.now()>=R.end||p.coins<R.bid+add)return;
+    R.bid+=add;R.leader=id;R.end=Math.max(R.end,Date.now()+EXT);
+    addLog(p.name+" → 🪙 "+R.bid);arm();push();sayH(L("bid",p.name,R.bid),false);
+  }else if(m.t==="again"&&own&&R.state==="end"){
+    clearTimeout(R.t);Object.assign(R,{lots:[],state:"lobby",idx:-1,bid:0,leader:null,end:0,log:[]});
+    R.players.forEach(q=>{q.coins=START;q.won=[]});push();
+  }
+}
+
+/* ===== ulanish (PeerJS: ega telefoni = server) ===== */
+function send(o){if(role==="host")hostRecv(myId,o);else if(conn&&conn.open)conn.send(o)}
+function startHost(){
+  code=Math.random().toString(36).slice(2,7);
+  peer=new Peer("rasmauksion-"+code);
+  peer.on("error",e=>{if(e.type==="unavailable-id")return startHost();$("jm").textContent="Xato: "+e.type;$("hostBtn").disabled=false});
+  peer.on("open",()=>{
+    role="host";hostInit();
+    peer.on("connection",c=>{
+      let pid=null;
+      c.on("data",m=>{if(m&&m.t==="join"){pid=m.id}if(pid)hostRecv(pid,m,c)});
+      c.on("close",()=>{const p=R.players.get(pid);if(p&&p.conn===c){p.conn=null;push()}});
+    });
+    const link=location.origin+location.pathname+"?r="+code;
+    $("lnk").textContent=link;$("invbox").classList.remove("hid");
+    $("shr").onclick=()=>window.open("https://t.me/share/url?url="+encodeURIComponent(link)+"&text="+encodeURIComponent("🔨 Rasm auksioniga kiring!"),"_blank");
+    $("cp").onclick=()=>{try{navigator.clipboard.writeText(link);$("cp").textContent="✅ Nusxalandi"}catch(e){}};
+    hostRecv(myId,{t:"join",name:myName});
+  });
+}
+function startGuest(){
+  peer=new Peer();
+  peer.on("error",e=>{$("join").classList.remove("hid");$("jm").textContent=e.type==="peer-unavailable"?"Xona topilmadi. Ega sahifani ochiq tutayotganini tekshiring.":"Xato: "+e.type;$("joinBtn").disabled=false});
+  peer.on("open",()=>{
+    conn=peer.connect("rasmauksion-"+urlCode,{reliable:true});
+    conn.on("open",()=>{role="guest";conn.send({t:"join",id:myId,name:myName})});
+    conn.on("data",on);
+    conn.on("close",()=>{show("Ega o‘yindan chiqib ketdi 😔");$("hs").textContent="Aloqa uzildi. Sahifani yangilab qayta kiring.";setTimeout(()=>{},0)});
+  });
+}
+$("nm").value=(()=>{try{return localStorage.getItem("nm")||""}catch(e){return""}})();
+function getName(){myName=$("nm").value.trim()||"Mehmon";try{localStorage.setItem("nm",myName)}catch(e){}$("jm").textContent="Ulanmoqda…"}
+$("hostBtn").onclick=()=>{getName();$("hostBtn").disabled=true;startHost()};
+$("joinBtn").onclick=()=>{getName();$("joinBtn").disabled=true;startGuest()};
+if(urlCode){$("joinBtn").classList.remove("hid");$("hostBtn").classList.add("hid");$("jm").textContent="Siz xonaga taklif qilindingiz. Ismingizni yozing va kiring."}
+
+/* ===== ekran (hamma uchun bir xil) ===== */
+function on(m){
+  if(m.t==="state"){S=m;at=Date.now();render()}
+  else if(m.t==="lot")$("pic").src=m.img;
+  else if(m.t==="say")show(m.text);
+  else if(m.t==="end")results(m.results);
+}
+const me=()=>S.players.find(p=>p.id===myId)||{coins:0};
+const isHost=()=>role==="host";
+function pl(p,x){return '<div class="pl"><span>'+(S.leader===p.id?"👑 ":"")+esc(p.name)+(p.id===S.host?" (ega)":"")+(p.on?"":" 💤")+x+'</span><span>🪙 '+p.coins+'</span></div>'}
+function render(){
+  ["join","lobby","game","end"].forEach(i=>$(i).classList.add("hid"));
+  $("me").textContent="🪙 "+me().coins;
+  if(S.state==="lobby"){
+    $("lobby").classList.remove("hid");
+    $("lp").innerHTML=S.players.map(p=>pl(p,"")).join("");
+    $("hostbox").classList.toggle("hid",!isHost());
+    $("lh").textContent=isHost()?"Do‘stlaringiz kirishini kuting, so‘ng boshlang.":"Ega rasmlarni joylayapti. Kuting…";
+    $("fs").textContent=S.n?"✅ "+S.n+" ta rasm tayyor":"Hali rasm yo‘q (1–12 ta)";
+    $("go").disabled=!S.n;
+  }else if(S.state==="auction"||S.state==="sold"){
+    $("game").classList.remove("hid");
+    $("cnt").textContent="Lot "+(S.idx+1)+"/"+S.n;
+    $("bid").textContent="🪙 "+S.bid;
+    const l=S.players.find(p=>p.id===S.leader);
+    $("ld").textContent=l?"👑 "+l.name:"Hali taklif yo‘q";
+    $("pls").innerHTML=S.players.map(p=>pl(p," · "+p.wins+" ta rasm")).join("");
+    $("log").innerHTML=S.log.map(esc).join("<br>");
+    [10,50,100].forEach((v,k)=>{$("b"+(k+1)).disabled=S.state!=="auction"||S.leader===myId||me().coins<S.bid+v});
+  }else if(S.state==="end"){
+    $("end").classList.remove("hid");$("again").classList.toggle("hid",!isHost());
+  }
+}
+[10,50,100].forEach((v,k)=>$("b"+(k+1)).onclick=()=>send({t:"bid",add:v}));
+setInterval(()=>{
+  if(S.state!=="auction")return;
+  const r=Math.max(0,S.left-(Date.now()-at));
+  $("tm").textContent=Math.ceil(r/1000);$("tm").className="tm"+(r<=5000?" lo":"");
+  $("br").style.width=(r/LOT*100)+"%";
+},200);
+function results(res){
+  $("win").textContent="🏆 G‘olib: "+(res[0]?esc(res[0].name):"-");
+  $("res").innerHTML=res.map(p=>'<div class="pl"><span>'+esc(p.name)+' · '+p.won.length+' ta rasm</span><span>🪙 '+p.coins+'</span></div><div class="wins">'+p.won.map(w=>'<img src="'+w+'" alt="">').join("")+'</div>').join("");
+}
+$("again").onclick=()=>send({t:"again"});
+$("go").onclick=()=>send({t:"start"});
+$("clr").onclick=()=>send({t:"clearLots"});
+
+/* ===== rasm yuklash (ega) ===== */
+$("f").onchange=e=>{
+  const fl=[...e.target.files];if(!fl.length)return;
+  $("fs").textContent="Yuklanmoqda…";const out=[];let n=0;
+  const done=()=>{if(++n===fl.length){send({t:"addLots",images:out});e.target.value=""}};
+  fl.forEach(f=>{const r=new FileReader();r.onerror=done;r.onload=()=>{const im=new Image();
+    im.onload=()=>{const s=Math.min(1,640/Math.max(im.width,im.height)),c=document.createElement("canvas");
+      c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+      out.push(c.toDataURL("image/jpeg",.72));done()};
+    im.onerror=done;im.src=r.result};r.readAsDataURL(f)});
+};
+</script>
+</body>
+</html>
